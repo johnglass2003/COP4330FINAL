@@ -2,7 +2,6 @@ package Parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import
 
 
 public class Lexer {
@@ -21,7 +20,7 @@ public class Lexer {
         {
             if ((peek(" ") || peek("\b") || peek("\n") ||  peek("\r") || peek("\t")))
             {
-                chars.advance();
+                chars.advance(1);
             }
             else
             {
@@ -42,9 +41,6 @@ public class Lexer {
                         while (match("\\d"));
                         return chars.emit(Token.Type.DECIMAL);
                     }
-                    else {
-                        throw new ParseException("Invalid String", chars.index + 1);
-                    }
                 }
             }
             else {
@@ -53,9 +49,6 @@ public class Lexer {
                     if (peek("\\d")) {
                         while (match("\\d"));
                         return chars.emit(Token.Type.DECIMAL);
-                    }
-                    else {
-                        throw new ParseException("Invalid String", chars.index + 1);
                     }
                 }
                 else{
@@ -79,9 +72,6 @@ public class Lexer {
                     if (peek("\\d")) {
                         while (match("\\d"));
                         return chars.emit(Token.Type.DECIMAL);
-                    }
-                    else {
-                        throw new ParseException("Invalid String", chars.index + 1);
                     }
                 }
                 else{
@@ -122,7 +112,6 @@ public class Lexer {
         {
             return chars.emit(Token.Type.OPERATOR);
         }
-        throw new ParseException("Invalid String", chars.index + 1);
         }
 
 
@@ -139,9 +128,6 @@ public class Lexer {
         else if (peek("-|\\d")) { //number or +/-
             return lexNumber();
         }
-        else if (peek("\\\"")) { //string escape called here
-            return lexString();
-        }
         else { //operator
             return lexOperator();
         }
@@ -149,7 +135,7 @@ public class Lexer {
 
     //these are from blackjack practical
     private boolean peek(Object... objects) {
-        for (var i = 0; i < objects.length; i++) {
+        for (int i = 0; i < objects.length; i++) {
             if (!chars.has(i) || !test(objects[i], chars.get(i))) {
                 return false;
             }
@@ -158,7 +144,7 @@ public class Lexer {
     }
 
     private boolean match(Object... objects) {
-        var peek = peek(objects);
+        boolean peek = peek(objects);
         if (peek) {
             chars.advance(objects.length);
         }
