@@ -2,6 +2,7 @@ package Parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import
 
 
 public class Lexer {
@@ -21,14 +22,13 @@ public class Lexer {
             if ((peek(" ") || peek("\b") || peek("\n") ||  peek("\r") || peek("\t")))
             {
                 chars.advance();
-                lexEscape();
             }
             else
             {
                 tokenList.add(lexToken());
             }
         }
-        return tokenList; 
+        return tokenList;
     }
 
     private Token lexNumber() {
@@ -146,7 +146,7 @@ public class Lexer {
             return lexOperator();
         }
     }
-    
+
     //these are from blackjack practical
     private boolean peek(Object... objects) {
         for (var i = 0; i < objects.length; i++) {
@@ -200,7 +200,7 @@ public class Lexer {
         }
 
         public Token emit(Token.Type type) {
-            var token = new Token(type, input.substring(index, index + length));
+            Token token = new Token(type, input.substring(index, index + length));
             index += length;
             length = 0;
             return token;

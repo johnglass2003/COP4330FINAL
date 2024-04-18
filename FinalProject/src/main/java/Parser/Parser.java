@@ -36,8 +36,8 @@ public class Parser {
 
     private static boolean test(Object object, Token token) {
         return switch (object) {
-            case Token.Type type -> token.type() == type;
-            case String value -> token.value().equals(value);
+            case Token.Type type -> token.type == type;
+            case String value -> token.value.equals(value);
             case List<?> options -> options.stream().anyMatch(o -> test(o, token));
             default -> throw new AssertionError(object);
         };
