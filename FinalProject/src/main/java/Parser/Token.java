@@ -6,9 +6,11 @@ record Token(
 ) {
 
     enum Type {
-        NUMBER,
         IDENTIFIER,
-        OPERATOR,
+        INTEGER,
+        DECIMAL,
+        STRING,
+        OPERATOR
     }
 
 }

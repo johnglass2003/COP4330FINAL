@@ -13,15 +13,140 @@ public class Lexer {
 
     //we want the format to be (commandname[argument1,argument2,...])
 
-    List<Token> lex() { throw new RuntimeException("TODO"); }
+    List<Token> lex() {
+        List<Token> tokenList = new ArrayList<>();
 
-    private Token lexNumber() { throw new RuntimeException("TODO"); }
+        while(chars.has(0))
+        {
+            if ((peek(" ") || peek("\b") || peek("\n") ||  peek("\r") || peek("\t")))
+            {
+                chars.advance();
+                lexEscape();
+            }
+            else
+            {
+                tokenList.add(lexToken());
+            }
+        }
+        return tokenList; 
+    }
 
-    private Token lexOperator() { throw new RuntimeException("TODO"); }
+    private Token lexNumber() {
+        if(match("-"))
+        {
+            if(match("0"))
+            {
+                if(match("\\."))
+                {
+                    if (peek("\\d")) {
+                        while (match("\\d"));
+                        return chars.emit(Token.Type.DECIMAL);
+                    }
+                    else {
+                        throw new ParseException("Invalid String", chars.index + 1);
+                    }
+                }
+            }
+            else {
+                while(match("\\d"));
+                if(match("\\.")){
+                    if (peek("\\d")) {
+                        while (match("\\d"));
+                        return chars.emit(Token.Type.DECIMAL);
+                    }
+                    else {
+                        throw new ParseException("Invalid String", chars.index + 1);
+                    }
+                }
+                else{
+                    return chars.emit(Token.Type.INTEGER);
+                }
+            }
+        }
+        else
+        {
+            if(match("0"))
+            {
+                if(match("\\."))
+                {
+                    while(match("\\d"));
+                    return chars.emit(Token.Type.DECIMAL);
+                }
+            }
+            else {
+                while(match("\\d"));
+                if(match("\\.")){
+                    if (peek("\\d")) {
+                        while (match("\\d"));
+                        return chars.emit(Token.Type.DECIMAL);
+                    }
+                    else {
+                        throw new ParseException("Invalid String", chars.index + 1);
+                    }
+                }
+                else{
+                    return chars.emit(Token.Type.INTEGER);
+                }
+            }
+
+        }
+        return chars.emit(Token.Type.INTEGER);
+        }
+
+    private Token lexOperator() {
+        if(peek("!", "="))
+        {
+            match("!");
+            match("=");
+            return chars.emit(Token.Type.OPERATOR);
+        }
+        if(peek("=", "="))
+        {
+            match("=");
+            match("=");
+            return chars.emit(Token.Type.OPERATOR);
+        }
+        if(peek("&", "&"))
+        {
+            match("&");
+            match("&");
+            return chars.emit(Token.Type.OPERATOR);
+        }
+        if(peek("\\|", "\\|"))
+        {
+            match("\\|");
+            match("\\|");
+            return chars.emit(Token.Type.OPERATOR);
+        }
+        if(match("[^\\\\s]"))
+        {
+            return chars.emit(Token.Type.OPERATOR);
+        }
+        throw new ParseException("Invalid String", chars.index + 1);
+        }
 
 
-    private Token lexIdentifier() { throw new RuntimeException("TODO"); }
+    private Token lexIdentifier() {
+            if(match("(@|[A-Za-z])"));
+            while(match("[A-Za-z0-9_-]"));
+            return chars.emit(Token.Type.IDENTIFIER);
+        }
 
+    public Token lexToken() {
+        if (peek("(@|[A-Za-z])")) { //identifier
+            return lexIdentifier();
+        }
+        else if (peek("-|\\d")) { //number or +/-
+            return lexNumber();
+        }
+        else if (peek("\\\"")) { //string escape called here
+            return lexString();
+        }
+        else { //operator
+            return lexOperator();
+        }
+    }
+    
     //these are from blackjack practical
     private boolean peek(Object... objects) {
         for (var i = 0; i < objects.length; i++) {
