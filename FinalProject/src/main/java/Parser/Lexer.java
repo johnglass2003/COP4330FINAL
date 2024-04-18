@@ -153,12 +153,18 @@ public class Lexer {
     }
 
     private static boolean test(Object object, char character) {
-        return switch (object) {
-            case Character c -> character == c;
-            case String regex -> Character.toString(character).matches(regex);
-            case List<?> options -> options.stream().anyMatch(o -> test(o, character));
-            default -> throw new AssertionError(object);
-        };
+        if (object instanceof Character) {
+            Character c = (Character) object;
+            return character == c;
+        } else if (object instanceof String) {
+            String regex = (String) object;
+            return Character.toString(character).matches(regex);
+        } else if (object instanceof List<?>) {
+            List<?> options = (List<?>) object;
+            return options.stream().anyMatch(o -> test(o, character));
+        } else {
+            throw new AssertionError(object);
+        }
     }
 
     private static final class CharStream {

@@ -30,9 +30,15 @@ public class Main {
         CommandManager manager = new CommandManager();
         manager.registerCommand("add", addCommand);
 
+        List myList1 = new ArrayList();
+        myList1.add("5");
+        myList1.add("7");
+        List myList2 = new ArrayList();
+        myList2.add("5");
+        myList2.add("Hello");
         // Execute with correct and incorrect parameters
-        manager.executeCommand("add", List.of("5", "7")); // Output should be "Result: 12"
-        manager.executeCommand("add", List.of("5", "hello")); // Error message about the type
+        manager.executeCommand("add", myList1); // Output should be "Result: 12"
+        manager.executeCommand("add", myList2); // Error message about the type
     }
 
     // Validator to check if a string is an integer

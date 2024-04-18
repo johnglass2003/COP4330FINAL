@@ -18,7 +18,7 @@ public class Parser {
 
     //from blackjack practical
     private boolean peek(Object... objects) {
-        for (var i = 0; i < objects.length; i++) {
+        for (int i = 0; i < objects.length; i++) {
             if (!tokens.has(i) || !test(objects[i], tokens.get(i))) {
                 return false;
             }
@@ -27,7 +27,7 @@ public class Parser {
     }
 
     private boolean match(Object... objects) {
-        var peek = peek(objects);
+        boolean peek = peek(objects);
         if (peek) {
             tokens.advance(objects.length);
         }
@@ -35,12 +35,18 @@ public class Parser {
     }
 
     private static boolean test(Object object, Token token) {
-        return switch (object) {
-            case Token.Type type -> token.type == type;
-            case String value -> token.value.equals(value);
-            case List<?> options -> options.stream().anyMatch(o -> test(o, token));
-            default -> throw new AssertionError(object);
-        };
+        if (object instanceof Token.Type) {
+            Token.Type type = (Token.Type) object;
+            return token.type == type;
+        } else if (object instanceof String) {
+            String value = (String) object;
+            return token.value.equals(value);
+        } else if (object instanceof List<?>) {
+            List<?> options = (List<?>) object;
+            return options.stream().anyMatch(o -> test(o, token));
+        } else {
+            throw new AssertionError(object);
+        }
     }
 
     private static final class TokenStream {
