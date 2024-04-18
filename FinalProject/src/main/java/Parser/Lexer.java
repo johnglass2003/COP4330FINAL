@@ -13,7 +13,7 @@ public class Lexer {
 
     //we want the format to be (commandname[argument1,argument2,...])
 
-    List<Token> lex() {
+    List<Token> lex() throws ParseException {
         List<Token> tokenList = new ArrayList<>();
 
         while(chars.has(0))
@@ -83,7 +83,7 @@ public class Lexer {
         return chars.emit(Token.Type.INTEGER);
         }
 
-    private Token lexOperator() {
+    private Token lexOperator() throws ParseException {
         if(peek("!", "="))
         {
             match("!");
@@ -112,7 +112,8 @@ public class Lexer {
         {
             return chars.emit(Token.Type.OPERATOR);
         }
-        }
+        throw new ParseException("Invalid String");
+    }
 
 
     private Token lexIdentifier() {
@@ -121,7 +122,7 @@ public class Lexer {
             return chars.emit(Token.Type.IDENTIFIER);
         }
 
-    public Token lexToken() {
+    public Token lexToken() throws ParseException {
         if (peek("(@|[A-Za-z])")) { //identifier
             return lexIdentifier();
         }
